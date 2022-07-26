@@ -1,0 +1,26 @@
+job('child job') {
+	description('This is my seed test1 Job')
+  parameters {
+        stringParam('Planet', defaultValue = 'world', description = 'This is the world')
+	booleanParam('FLAG', true)
+        choiceParam('OPTION', ['option 1 (default)', 'option 2', 'option 3'])
+    }
+  scm {
+        git('https://github.com/durgaprasadpaidala/first-demo-project.git', 'main')
+    }
+  steps {
+        maven {
+            mavenInstallation('maven')
+            goals('-B -DskipTests clean package')
+        }
+        maven {
+            mavenInstallation('maven')
+            goals('test')
+        }
+        shell('''
+            echo ************RUNNING THE JAR************************
+            java -jar /var/lib/jenkins/workspace/seedjob/target/my-app-1.0-SNAPSHOT.jar
+        ''')
+    }
+
+}
