@@ -1,15 +1,31 @@
 pipeline {
     agent any
 
-    environment {
-        NAME = 'AR'
-        LASTNAME = 'Shankar'
-    }
-
     stages {
-        stage('Build') {
+        stage ('Compile Stage') {
+
             steps {
-                sh 'echo $NAME $LASTNAME'
+                withMaven(maven : 'maven') {
+                    sh 'mvn clean compile'
+                }
+            }
+        }
+
+        stage ('Testing Stage') {
+
+            steps {
+                withMaven(maven : 'maven') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+
+        stage ('Deployment Stage') {
+            steps {
+                withMaven(maven : 'maven') {
+                    sh 'mvn install'
+                }
             }
         }
     }
